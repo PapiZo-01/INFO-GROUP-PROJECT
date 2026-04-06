@@ -12,7 +12,7 @@ A crowdspurced location-based web app for university students to track useful sp
 - Google Maps API
 - Hosted on Netlify
 
-##Team 
+## Team 
 - Naomi (DevOps)
 - Shane (UI Design)
 - Taariq (Lead)
