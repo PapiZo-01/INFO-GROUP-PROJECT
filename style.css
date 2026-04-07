@@ -1,9 +1,160 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; 
+    box-sizing: border-box;
+}
+        
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
 }
 
-body {
-  font-family: Arial, sans-serif; 
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #2b6fc3;
+    height: 10vh;
+
+}
+
+header img{
+    height: 100%;
+    margin-left: 10px;
+    padding: 5px;
+    background-color: transparent;
+}
+
+header p{
+    font-size: x-large;
+    font-weight: bold;
+    color: black;
+}
+
+#navbar {
+    overflow: hidden; 
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+}
+
+#navbar a {
+    
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: ease-in-out 0.25s;
+
+}
+
+#navbar a:hover {
+    background-color: #ddd;
+    color: black;
+    border-radius: 16px;
+}   
+
+main{
+    display: flex;
+    flex-direction: row;
+    height: 90vh;
+
+}
+
+button{
+  height: 40px;
+  width: 40px;
+  background-color: white;
+  border: 2px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+button i{
+    height: 110%;
+    width: 110%;
+    font-size: x-large;
+    /* padding: 10px 20px; */
+    cursor: pointer;
+}
+
+aside {
+    background-color: white;
+    padding: 5px;
+    width: 200px;
+    /* float: left; */
+    height: 100%;
+    margin: 0;
+    /* flex-grow: 1; */
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+}   
+
+aside ul {
+    list-style-type: none;
+    padding: 0;
+    justify-content: center;
+    
+}
+
+aside li  {
+    color: #333;
+    text-decoration: none;
+    margin-bottom: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  border-radius: 16px;
+    
+}
+
+aside li:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+aside li .selected {
+  background-color: #ddd;
+}
+
+#map {
+    height: 100%;
+    flex-grow: 18;
+}
+
+#AddToFavs {
+  position: absolute;
+
+  border: none;
+  
+  cursor: pointer;
+
+}
+
+#detail {
+  background-color: #f4f4f4;
+  padding: 20px;
+  width: 200px;
+  height: 100%;
+  margin: 0;
+  /* float: right; */
+  flex-grow: 1;
+  /* width: 10%; */
+}
+
+#FavsHeader {
+  border-bottom: #ddd 2px solid;
+  margin-bottom: 20px;
+}
+
+.FavItem {
+  background-color: #ddd;
+  border: 2px solid black;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
