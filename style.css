@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
 }
-        
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -55,6 +55,12 @@ header p{
     border-radius: 16px;
 }   
 
+#MapPage {
+    background-color: #ddd;
+    color: black;
+    border-radius: 16px;
+}
+
 main{
     display: flex;
     flex-direction: row;
@@ -82,7 +88,7 @@ button i{
 aside {
     background-color: white;
     padding: 5px;
-    width: 200px;
+    width: 8%;
     /* float: left; */
     height: 100%;
     margin: 0;
@@ -103,58 +109,193 @@ aside li  {
     color: #333;
     text-decoration: none;
     margin-bottom: 15px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px;
-  border-radius: 16px;
-    
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center-;
+    padding: 5px;
+    border-radius: 16px;
+    transition: 0.25s ease;
+      
 }
 
 aside li:hover {
-  background-color: #ddd;
-  color: black;
+    background-color: #ddd;
+    color: black;
 }
 
-aside li .selected {
-  background-color: #ddd;
+aside ul li.selected {
+    background-color: #ddd;
 }
 
 #map {
-    height: 100%;
-    flex-grow: 18;
+      height: 100%;
+      /* flex-grow: 18; */
+    width: 72%;
+    z-index: 0;
+}
+#map #Location{
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    right: 20.5%;
+    bottom: 21%;
+    height: 55%;
+    width: 270px;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-y: auto;
+    display: none;  /*must be hidden by default */
 }
 
-#AddToFavs {
-  position: absolute;
+#LocationInfo{
+    border-bottom: #ddd 2px solid;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+}
 
-  border: none;
-  
-  cursor: pointer;
+#ReviewSummary{
+    border-bottom: #ddd 2px solid;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    
+}
+
+#ReviewSummary h5{
+    margin-bottom: 0;
+}
+
+#ReviewSummary button{
+    margin-top: 10px;
+      background-color: #2b6fc3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+}
+
+#ReviewSummary button i{
+    font-size: medium;
+    padding-right: 5px;
+}
+
+
+#AddToFavs {
+    position: absolute;
+        z-index: 1;
+        bottom: 8%;
+        margin-left: 10px;
+        background-color: white;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+    border: none;
+    cursor: pointer;
 
 }
 
 #detail {
-  background-color: #f4f4f4;
-  padding: 20px;
-  width: 200px;
-  height: 100%;
-  margin: 0;
-  /* float: right; */
-  flex-grow: 1;
-  /* width: 10%; */
+    background-color: #f4f4f4;
+    padding: 20px;
+    width: 20%;
+    height: 100%;
+    margin: 0;
+    /* float: right; */
+    flex-grow: 1;
+    /* width: 10%; */
+    overflow-y: auto;
 }
 
 #FavsHeader {
-  border-bottom: #ddd 2px solid;
-  margin-bottom: 20px;
+    border-bottom: #ddd 2px solid;
+    margin-bottom: 20px;
 }
 
-.FavItem {
-  background-color: #ddd;
-  border: 2px solid black;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+#List {
+    padding: 0;
+    list-style-type: none;
+}
+
+#List .card {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.card {
+    background-color: #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+#cardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#cardHeader button {
+    scale: 0.75;
+    background-color: transparent; 
+    cursor: pointer;
+}
+
+.cardActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.cardActions button {
+    background-color: transparent;
+    cursor: pointer;
+    scale: 0.75;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+}
+
+#Reviews .card{
+    display: flex;
+    flex-direction: column;
+}
+
+#Reviews .card p:first-child {
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+
+#Reviews .star-rating {
+    cursor: default;
+    align-self: flex-start;
+    font-size: 50px;
+}
+
+.LikeBtn{
+    background-color: transparent;
+    align-self: flex-end;
+}
+
+.star {
+    font-size: 2rem;
+    color: #ccc;        /* unselected color */
+    transition: color 0.2s ease;
+}
+
+.star.selected,
+.star.hovered {
+    color: #f5a623;     /* gold color */
 }
