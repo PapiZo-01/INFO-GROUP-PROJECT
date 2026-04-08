@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>UWISpots - Login</title>
+    <style>
+
+        *{
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        .page{
+            height: 100%;
+            background-image: url('icon/UWI Admin Building (Restored) 003.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: blur(4px);
+
+        }
+
+        .loginside {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* z-index: 10; */
+               
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .inputitem{
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .login-container input {
+           
+            padding: 10px;
+          
+            border: none;
+            border-radius: 5px;
+        }
+        .login-container input:focus {
+            outline: none;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+        
+
+
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        
+
+    
+    </div>
+
+    <div class="loginside">
+
+        <div class="login-container">
+            <h2>Register for UWISpots<i class="bi bi-crosshair"></i></h2>
+            <div class="inputitem">
+                <i class="bi bi-person-fill"></i><span><input type="text" placeholder="Username" id="username" required></span>
+            </div>
+            <div class="inputitem">
+               <i class="bi bi-envelope-fill"></i><span><input type="email" id="email" placeholder="Email" required></span>
+            </div>
+            <div class="inputitem">
+                <i class="bi bi-lock-fill"></i><span><input type="password" placeholder="Password" id="password" required></span>
+            </div>
+            <div class="inputitem">
+                <i class="bi bi-lock-fill"></i><span><input type="password" placeholder="Confirm Password" id="confirmPassword" required></span>
+            </div>
+           
+            <button onclick="register()">Register</button>
+
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // For demonstration purposes, we'll just check if the fields are filled
+            if (username && password && password === confirmPassword) {
+                alert('Registration successful!');
+                // Here you would typically redirect to the main page or dashboard
+                window.location.href = 'index.html';
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+    </script>
+</body>
+</html>
