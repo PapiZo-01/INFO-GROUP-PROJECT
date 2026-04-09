@@ -41,7 +41,7 @@
         </aside>
 
         <div id="map">
-            <button id="AddToFavs"><i class="bi bi-bookmark-fill"></i></button>
+            <button id="AddToFavs" onclick="openPopup()"><i class="bi bi-bookmark-fill"></i></button>
            
             <!-- adds a div with the location information and reviews when a user clicks on a spot on the map or a spot in the details. This div should be hidden by default and only displayed when a location is selected. -->
             <div id="Location">
@@ -95,11 +95,37 @@
                 <p> Use the map to explore and find interesting spots on campus. Click on <i class="bi bi-bookmark-fill"></i> to add a location to your favorites.</p>
                 
              </section>
+
+
+             <!-- section to be display in favorites when a user clicks and is not logged in -->
+             <!-- <section class="notlogged">
+                 <p>Please log in to view your favorites.</p>
+                 <button><a href="login.html">Login</a></button>
+             </section> -->
+
+
+                <!-- To be displayed when user attempts to switch to favorites and is not logged in -->
+              <!-- <section class="notlogged">
+                 <p>Please log in to view your favorites.</p>
+                 <button><a href="login.html">Login</a></button>
+             </section> -->
                 
                 <!-- <p id="location-name">Select a location on the map to see details here.</p> -->
         </div>
 
     </main>
+
+    <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
+        <div class="popup-card">
+            <button class="close-btn" onclick="closePopup()">✕</button>
+            <h2>Save Location</h2>
+            <input type="text" placeholder="Location Title">
+            <textarea class="popup-notes" placeholder="Location Notes (optional)"></textarea>
+            <!-- button appends the added location to the favorites section -->
+            <button class="confirm-btn" onclick="closePopup()">Confirm</button>
+        </div>
+    </div>
+
     <!-- <div id="map"></div> -->
     <script src="app.js"> </script> 
     <script>
@@ -136,7 +162,7 @@
                         <br>
                         <p style="font-size: 13px;">Saved on 10/03/2026</p>
                         <div class="cardActions">
-                            <button><i class="bi bi-pencil"></i></button>
+                            <button><i class="bi bi-pencil"></i></button>  <!--when clicked the user can edit the information of the saved location-->
                         </div>
                    
                     </div>
@@ -230,6 +256,21 @@
              </section>
             `;
         }
+
+
+    function openPopup() {
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    // Close if clicking the dark overlay (not the card itself)
+    function closeOnOverlay(e) {
+      if (e.target === document.getElementById('overlay')) 
+        closePopup();
+    }
 
     </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVprZOHhVX2_cNEBhths5QVk4JZLKvR-c"></script>  -->

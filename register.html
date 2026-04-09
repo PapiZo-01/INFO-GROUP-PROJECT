@@ -81,6 +81,10 @@
         .login-container button:hover {
             background-color: #0056b3;
         }
+
+        #termsandcon{
+            margin-bottom: 10px;
+        }
         
 
 
@@ -102,7 +106,7 @@
                 <i class="bi bi-person-fill"></i><span><input type="text" placeholder="Username" id="username" required></span>
             </div>
             <div class="inputitem">
-               <i class="bi bi-envelope-fill"></i><span><input type="email" id="email" placeholder="Email" required></span>
+               <i class="bi bi-envelope-fill"></i><span><input type="email" id="email" placeholder="name@example.com" required></span>
             </div>
             <div class="inputitem">
                 <i class="bi bi-lock-fill"></i><span><input type="password" placeholder="Password" id="password" required></span>
@@ -110,6 +114,13 @@
             <div class="inputitem">
                 <i class="bi bi-lock-fill"></i><span><input type="password" placeholder="Confirm Password" id="confirmPassword" required></span>
             </div>
+
+            <div id="termsandcon">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#terms.html" target="_blank">Terms and Conditions</a></label>
+            </div>
+
+
            
             <button onclick="register()">Register</button>
 
