@@ -48,6 +48,7 @@
              <button id="AddToFavs" onclick="openPopup()"><i class="bi bi-bookmark-fill"></i></button>
             
             <div id="Location">
+                <button class="close-btn" onclick="closeInfo()">✕</button>
                 <section id="LocationInfo">
                     <h2>Location Name</h2>
                     <p>Location details and description go here. This is a placeholder for the location information that will be displayed when a user clicks on a spot on the map or a spot in the details.</p>
@@ -178,14 +179,6 @@
     <script src="app.js"> </script> 
     <script>
 
-         var map = L.map('map').setView([10.641919556440756, -61.39944669632869], 18);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-
-
          function select(element) {
             const isAlreadySelected = element.classList.contains("selected");
 
@@ -199,6 +192,29 @@
             else{
                 element.classList.remove("selected");
             }
+        }
+        
+        var map = L.map('map').setView([10.641919556440756, -61.39944669632869], 18);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const locationDiv = document.getElementById('Location');
+
+        locationDiv.addEventListener('mouseover', function() {
+            map.scrollWheelZoom.disable();
+        });
+
+        locationDiv.addEventListener('mouseout', function() {
+            map.scrollWheelZoom.enable();
+        });
+
+        //once you get the info button working yall can use this function to close the location info when the user clicks the close button on the location info div. For now, it just adds the "active" class which hides the
+        // location info div until you click on a location again. You can modify this function to clear the location info content if needed.
+        function closeInfo() {
+        document.getElementById('Location').classList.add('active');
         }
 
         function displayFavorites() {
@@ -328,6 +344,36 @@
       if (e.target === document.getElementById('overlay')) 
         closePopup();
     }
+
+    const stars = document.querySelectorAll('.star');
+    const ratingValue = document.getElementById('ratingValue');
+    let currentRating = 0;
+
+    stars.forEach(star => {
+    // Highlight stars on hover
+    star.addEventListener('mouseover', function() {
+            const hoverVal = this.dataset.value;
+            stars.forEach(s => {
+                s.classList.toggle('hovered', s.dataset.value <= hoverVal);
+            });
+    });
+
+        // Reset to current rating when mouse leaves
+        star.addEventListener('mouseout', function() {
+            stars.forEach(s => {
+                s.classList.remove('hovered');
+            });
+        });
+
+        // Set rating on click
+        star.addEventListener('click', function() {
+            currentRating = this.dataset.value;
+            ratingValue.textContent = currentRating;
+            stars.forEach(s => {
+                s.classList.toggle('selected', s.dataset.value <= currentRating);
+            });
+        });
+    });
 
     </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVprZOHhVX2_cNEBhths5QVk4JZLKvR-c"></script>  -->

@@ -139,17 +139,21 @@ aside {
     z-index: 0;
 }
 
-#map #Location{
+ #map #Location{
     position: absolute;
-    z-index: 2;
+    z-index: 1000;
     background-color: white;
-    right: 20.5%;
-    bottom: 21%;
-    height: 55%;
+    right: 2%;
+    bottom: 15%;
+    height: 70%;
     width: 270px;
     border-radius: 5px;
     padding: 10px;
     overflow-y: auto;
+    /* cursor: default; */
+}
+
+#map #Location.active{
     display: none;
 }
 
@@ -419,7 +423,7 @@ aside {
 }
 
 .popup-notes{
-    /* text-align: start; */
+    
     width: 100%;
     height: 150px;
     margin-bottom: 0.7rem;
@@ -464,38 +468,45 @@ aside {
 
 @media screen and (max-width: 768px) {
 
-        main{
-            flex-direction: column;
-            overflow-y: auto;
+    main{
+        flex-direction: column;
+        overflow-y: auto;
+    }
 
-        }
+    #map {
+        width: 100%;
+        height: 70%;
+        
+    }
 
-        #map {
-            width: 100%;
-            height: 70%;
-            
-        }
+    aside {
+        width: 100%;
+        height: 10%;
+        display:inline-flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
 
-        aside {
-            width: 100%;
-            height: 10%;
-            display:inline-flex;
-            flex-direction: row;
-            justify-content: space-around;
-        }
+    .sideBtn{
+        margin: 0;
+    }
 
-        .sideBtn{
-            margin: 0;
-        }
+    #detail {
+        width: 100%;
+        height: 40%;
+        padding: 5px;
+    }
 
-        #detail {
-            width: 100%;
-            height: 40%;
-            padding: 5px;
-        }
+    #FavsHeader{
+        height: fit-content;
+        margin-bottom: 10px;
+    }
 
-        #FavsHeader{
-            height: fit-content;
-            margin-bottom: 10px;
-        }
+    #map #Location {
+        right: 2%;
+        overflow-y: scroll;
+        height: 70%;
+
+
+    }
 }
