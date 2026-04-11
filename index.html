@@ -38,12 +38,10 @@
     <main>
         <aside id="master">
            
-            <ul>
-                <li id="Favorites" class="" onclick="select(this); displayFavorites()"><i class="bi bi-bookmark"></i>Favorites</li>
-                <li id="FoodAndDrink" class="" onclick="select(this); displayFoodAndDrink()"><i class="bi bi-cup-straw"></i>Food and Drink</li>
-                <li id="StudySpots" class="" onclick="select(this); displayStudySpots()"><i class="bi bi-book"></i>Study Spots</li>
-                <li id="Recreation" class="" onclick="select(this); displayRecreation()"><i class="bi bi-controller"></i>Recreation</li>
-            </ul>
+            <button id="Favorites" class="sideBtn" onclick="select(this); displayFavorites()"><i class="bi bi-bookmark"></i><span>Favorites</span></button>
+            <button id="FoodAndDrink" class="sideBtn" onclick="select(this); displayFoodAndDrink()"><i class="bi bi-cup-straw"></i><span>Food and Drink</span></button>
+            <button id="StudySpots" class="sideBtn" onclick="select(this); displayStudySpots()"><i class="bi bi-book"></i><span>Study Spots</span></button>
+            <button id="Recreation" class="sideBtn" onclick="select(this); displayRecreation()"><i class="bi bi-controller"></i><span>Recreation</span></button>
         </aside>
 
         <div id="map">
@@ -191,7 +189,7 @@
          function select(element) {
             const isAlreadySelected = element.classList.contains("selected");
 
-            document.querySelectorAll('aside ul li').forEach(li => {
+            document.querySelectorAll('aside button').forEach(li => {
                 li.classList.remove("selected");
             });
 

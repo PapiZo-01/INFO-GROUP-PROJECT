@@ -9,8 +9,6 @@ body {
     height: 100vh;
 }
 
-
-    /* Header */
 header{
     display: flex;
     align-items: center;
@@ -34,7 +32,6 @@ header p{
     color: black;
 }
 
-    /* NavBar */
 #navbar {
     overflow: hidden; 
     display: flex;
@@ -100,37 +97,37 @@ aside {
     width: 10%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    
 }   
 
-    /* Aside Elements */
-aside ul {
-    list-style-type: none;
-    padding: 0;
-    justify-content: center;
-    
-}
 
-aside li  {
+.sideBtn {
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    font-size: 1.1em;
     color: #333;
-    text-decoration: none;
     margin-bottom: 15px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-items: center-;
+    justify-items: center;
     padding: 5px;
     border-radius: 16px;
+    
     transition: 0.25s ease;
         
 }
 
-aside li:hover {
+.sideBtn:hover {
     background-color: #ddd;
     color: black;
 }
 
-aside ul li.selected {
+.sideBtn.selected {
     background-color: #ddd;
 }
 
@@ -194,7 +191,7 @@ aside ul li.selected {
     /* Save Button  */
 #AddToFavs {
     position: absolute;
-    z-index: 1;
+    z-index: 1000;
     bottom: 8%;
     margin-left: 10px;
     background-color: white;
@@ -399,6 +396,7 @@ aside ul li.selected {
     transform: translateY(0) scale(1);
 }
 
+
 .popup-card h2 {
     margin: 0 0 0.5rem;
     font-size: 1.4rem;
@@ -462,4 +460,42 @@ aside ul li.selected {
 
 .confirm-btn:hover {
     background: #4f46e5;
+}
+
+@media screen and (max-width: 768px) {
+
+        main{
+            flex-direction: column;
+            overflow-y: auto;
+
+        }
+
+        #map {
+            width: 100%;
+            height: 70%;
+            
+        }
+
+        aside {
+            width: 100%;
+            height: 10%;
+            display:inline-flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .sideBtn{
+            margin: 0;
+        }
+
+        #detail {
+            width: 100%;
+            height: 40%;
+            padding: 5px;
+        }
+
+        #FavsHeader{
+            height: fit-content;
+            margin-bottom: 10px;
+        }
 }
