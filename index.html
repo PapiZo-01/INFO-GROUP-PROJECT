@@ -732,7 +732,7 @@
 
         auth.onAuthStateChanged(async user => {
             try {
-                if (!user) {
+                if (!user) {        //DISPLAYS THIS NAVBAR IF NOT LOGGED IN
                     document.getElementById('navbar').innerHTML = `
                         <a href="#home" id="HomePage"><i class="bi bi-house"></i> Home</a>
                         <a href="index.html" id="MapPage"><i class="bi bi-map"></i> Map</a>
@@ -748,7 +748,7 @@
                     ? `<img src="${user.photoURL}" class="nav-avatar">`
                     : `<i class="bi bi-person-circle" style="font-size:1.4rem;"></i>`;
 
-                document.getElementById('navbar').innerHTML = `
+                document.getElementById('navbar').innerHTML = `     
                     <a href="home.html" id="HomePage"><i class="bi bi-house"></i> Home</a>
                     <a href="index.html" id="MapPage"><i class="bi bi-map"></i> Map</a>
                     <a href="#about" id="AboutPage"><i class="bi bi-info-circle"></i> About</a>
@@ -764,22 +764,22 @@
                             </a>
                         </div>
                     </div>
-                `;
+                `;      //DISPLAYS THIS NAVBAR WHEN THE USER IS LOGGED IN
 
                 const snapshot = await db.collection('users').doc(user.uid).collection('favs').get();
-                snapshot.forEach(doc => favs.push(doc.data()));
+                snapshot.forEach(doc => favs.push({ ...doc.data(), firestoreId: doc.id }));;
 
             } catch(err) {
                 console.error("Auth error:", err);
             }
         });
 
-        function toggleUserMenu() {
+        function toggleUserMenu() {     //OPENS THE MENU BELOW LOGGED IN USER
             document.getElementById('userDropdown').classList.toggle('open');
         }
 
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function(e) {        //CLOSES THE DROPDOWN FROM USER PART OF NAVBAR
             const navUser = document.querySelector('.nav-user');
             if (navUser && !navUser.contains(e.target)) {
                 const dropdown = document.getElementById('userDropdown');
@@ -787,7 +787,7 @@
             }
         });
 
-        function logout() {
+        function logout() {     //LOGS USER OUT 
             auth.signOut().then(() => {
                 window.location.href = 'index.html';
             }).catch(err => console.error("Logout failed:", err));
@@ -799,7 +799,7 @@
             e.stopPropagation();
         }, { passive: false });
 
-        locationDiv.addEventListener('mouseover', function() {
+        locationDiv.addEventListener('mouseover', function() {      //MAKES IT SO THT THE INFO TAB IS SCROLLABLE
             map.scrollWheelZoom.disable();
         });
 
@@ -807,7 +807,7 @@
             map.scrollWheelZoom.enable();
         });
 
-       function select(element) {
+       function select(element) {       //SHOWS WHICH ITEM IN THE MASTER IS CURRENTLY SELECTED
             const isAlreadySelected = element.classList.contains("selected");
 
             document.querySelectorAll('aside button').forEach(li => {
@@ -823,7 +823,7 @@
         }
 
         
-         function displayFoodAndDrink() {
+         function displayFoodAndDrink() {       //DISPLAYS ALL FOOD AND DRINKS AREAS 
             let detail = document.getElementById("detail");
             detail.innerHTML = `
                 <section id="FavsHeader">
@@ -854,7 +854,7 @@
         
         }
 
-        function displayStudySpots() {
+        function displayStudySpots() {      //DISPLAYS ALL STUDY AREAS
             let detail = document.getElementById("detail");
             detail.innerHTML = `
                 <section id="FavsHeader">
@@ -886,7 +886,7 @@
         }
 
 
-        function displayRecreation() {
+        function displayRecreation() {      //DISPLAYS ALL RECREATION AREAS
             let detail = document.getElementById("detail");
             detail.innerHTML = `
                 <section id="FavsHeader">
@@ -916,16 +916,16 @@
             }
         }
 
-    function openPopup(placeName, fromMap = false) {
+    function openPopup(placeName, fromMap = false) {        //OPENS A POPUP WHICH ALLOWS PEOPLE TO SAVE NOTES ABOUT FAVORITED AREAS
         document.getElementById('overlay').classList.add('active');
-        // Pre-fill the location title input with the place name
+        
         document.getElementById('popupLocationTitle').value = placeName || '';
-        // Store the name so Confirm can use it
+   
         document.getElementById('overlay').dataset.placeName = placeName || '';
         document.getElementById('overlay').dataset.fromMap = fromMap;
     }
 
-    function closePopup() {
+    function closePopup() {     //CLOSES THE POPUP
         document.getElementById('overlay').classList.remove('active');
         document.getElementById('popupNotes').value = ''
     }
@@ -935,70 +935,70 @@
         closePopup();
     }
 
-    async function confirmSave() {
+    async function confirmSave() {      //CONFIRMS THE INFRO WHEN SAVING A FOVRITED AREA
         const title = document.getElementById('popupLocationTitle').value.trim();
         const notes = document.getElementById('popupNotes').value.trim();
         const fromMap = document.getElementById('overlay').dataset.fromMap === 'true';
         const user = auth.currentUser;
 
-            if (fromMap) {  //MAKES A NEW MARKER FOR EACH FAVORITE PLACE THAT ISNT IN THE ARRAY OF OBJECTS
-                const center = map.getCenter();
-                const newFav = {
-                    name: title,
-                    savedTitle: title,
-                    notes: notes,
-                    latitude: center.lat,
-                    longitude: center.lng,
-                    savedOn: new Date().toLocaleDateString('en-GB')
-                };
+        if (fromMap) {      //HANDLES IF ADDING A FAVORITE FROM AddToFavs BUTTON ON MAP
+            const center = map.getCenter();     //GETS THE CURRENT LOCATION O THE MAP
+            const newFav = {                    //CREATES AN OBJECT FOR THE NEW SAVE
+                name: title,
+                savedTitle: title,
+                notes: notes,
+                latitude: center.lat,
+                longitude: center.lng,
+                savedOn: new Date().toLocaleDateString('en-GB')
+            };
 
-                favs.push(newFav);
-
-                
-                if (user) {   // SAVES ALL THE USERS FAVORITES FOR WHEN THEY LOG IN
-                    await db.collection('users')
-                            .doc(user.uid)
-                            .collection('favs')
-                            .add(newFav);
-                }
-
-                L.marker([center.lat, center.lng], { icon: favIcon })
-                    .addTo(map)
-                    .bindPopup(`<b>${title}</b><br>${notes || 'No notes.'}`)
-                    .openPopup();
-
-            } else {
-                const placeName = document.getElementById('overlay').dataset.placeName;
-                const place = places.find(p => p.name === placeName);
-
-                if (place) {
-                    const existingIdx = favs.findIndex(f => f.name === place.name);
-                    if (existingIdx === -1) {
-                        place.favorited = true;
-
-                        const newFav = {
-                            ...place,
-                            savedTitle: title,
-                            notes: notes,
-                            savedOn: new Date().toLocaleDateString('en-GB')
-                        };
-
-                        favs.push(newFav);
-
-                        // Save to Firestore
-                        if (user) {
-                            await db.collection('users')
+            if (user) {     //IF THE USER IF LOGGED IN IT ADDS THE FAVORITE TO THE DATABASE AND ARRAY
+                const docRef = await db.collection('users')
                                     .doc(user.uid)
                                     .collection('favs')
                                     .add(newFav);
-                        }
+                favs.push({ ...newFav, firestoreId: docRef.id });
+            } else {
+                favs.push(newFav);      //IF NOT IT JUST ADDS IT TO THE ARRAY
+            }
+
+            L.marker([center.lat, center.lng], { icon: favIcon })       //CREATES A MARKER ON THE MAP
+                .addTo(map)
+                
+
+        } else {    //HANLES IF ADDING FAVORITE FROM ONE OF THE TABS 
+            const placeName = document.getElementById('overlay').dataset.placeName;
+            const place = places.find(p => p.name === placeName);       //FINDS THE PLACE IN THE PLACES ARRAY
+
+            if (place) {     //HANDLES IF THE PLACE IS FOUND
+                const existingIdx = favs.findIndex(f => f.name === place.name);     //FINDS IF THE PLACE EXISTS IN THE FAVORITES ARRAY
+                if (existingIdx === -1) {       //ADDS FAVORITE TO DATABASE AND FAVORITES ARRAY IF IT DOESNT ALEADY EXIST IN DFAVOITES ARRAY
+                    place.favorited = true;
+
+                    const newFav = {
+                        ...place,
+                        savedTitle: title,
+                        notes: notes,
+                        savedOn: new Date().toLocaleDateString('en-GB')
+                    };
+
+                    if (user) {
+                        const docRef = await db.collection('users')
+                                            .doc(user.uid)
+                                            .collection('favs')
+                                            .add(newFav);
+                        favs.push({ ...newFav, firestoreId: docRef.id });
+                    } else {
+                        favs.push(newFav);
                     }
                 }
             }
+        }
 
         closePopup();
 
-        const selected = document.querySelector('aside button.selected');      //RELOADS THE DETAILS WHEN APLACE IS SAVED TO SHOW THAT ITS BEEN SAVED
+        
+        const selected = document.querySelector('aside button.selected'); // REFRESH WHICHEVER TAB IS CURRENTLY ACTIVE
         if (selected) {
             if (selected.id === 'FoodAndDrink') displayFoodAndDrink();
             else if (selected.id === 'StudySpots') displayStudySpots();
@@ -1013,7 +1013,7 @@
         openPopup(p.name);
     }
 
-    function displayFavorites() {
+    function displayFavorites() {       //DISPLAYS THE FAVORITED AREAS OF A USER
     const user = auth.currentUser;
     let detail = document.getElementById("detail");
     detail.innerHTML = `<section id="FavsHeader"><h2>Favorites</h2></section>`;
@@ -1027,7 +1027,7 @@
         return;
     }
 
-    if (favs.length === 0) {        //DISPLAYS ALL THE PLACES THE 
+    if (favs.length === 0) {        //DISPLAYS ALL THE PLACES THE USER HAS FAVORITED
         detail.innerHTML += `
         <section class="notlogged">
             <p>No favorites saved yet. Browse locations and press <i class="bi bi-bookmark"></i> to save one!</p>
@@ -1053,11 +1053,20 @@
         }
     }
  
-    function removeFav(index) { 
+    async function removeFav(index) {       //REMOVES AN FAVORITED ITEM FROM USERS LIST 
         const removed = favs.splice(index, 1)[0];
-        // Un-mark the place as favorited
         const place = places.find(p => p.name === removed.name);
-        if (place) place.favorited = false;
+        if (place) place.favorited = false; 
+
+        const user = auth.currentUser;
+        if (user && removed.firestoreId) {
+            await db.collection('users')
+                    .doc(user.uid)
+                    .collection('favs')
+                    .doc(removed.firestoreId)
+                    .delete();
+        }
+
         displayFavorites();
     }
 

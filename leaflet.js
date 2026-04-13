@@ -115,7 +115,7 @@ const places = [
 
 const favs = [];
 
-function createMarker() {
+function createMarker() {       //CREATES A MARKER OF THE MAP FOR EACH LOCATION IN PLACES ARRAY
     
     for(let p of places){
         var marker = L.marker([p.latitude, p.longitude]).addTo(map);
@@ -123,7 +123,7 @@ function createMarker() {
     }
 }
 
-function showInfo(p){
+function showInfo(p){       //OPENS THE INFO CARD ON THE MAP WHICH GIVES INFORMATION OF A SELECTED LOCATION
     map.setView([p.latitude, p.longitude], 18);
     let info = document.getElementById("Location");
     info.classList.add("active");
@@ -173,31 +173,29 @@ function showInfo(p){
 function closeInfo() {
       let info = document.getElementById('Location')
       info.classList.remove('active');
-    //   info.innerHTML = "";
-
     }
 
 function attachStarEvents() {
     const stars = document.querySelectorAll("#Location .star");
 
     stars.forEach(star => {
-        // Highlight on hover
-        star.addEventListener("mouseover", function () {
+       
+        star.addEventListener("mouseover", function () {        //CHANGES COLOUR WHEN MOUSE IS OVER THE STARS
             const val = this.dataset.value;
             stars.forEach(s => {
                 s.style.color = s.dataset.value <= val ? "gold" : "gray";
             });
         });
 
-        // Reset on mouse leave
-        star.addEventListener("mouseleave", function () {
+    
+        star.addEventListener("mouseleave", function () {       //PUTS STARS BACK TO NORMAL WHEN MOUSE IS NOLONGER ON STARS
             stars.forEach(s => {
                 s.style.color = s.dataset.value <= (s.dataset.selected || 0) ? "gold" : "gray";
             });
         });
 
-        // Lock in on click
-        star.addEventListener("click", function () {
+        
+        star.addEventListener("click", function () {        //KEEPS HOW MANY STARS ARE ACTUALLY CLICKED
             const val = this.dataset.value;
             stars.forEach(s => {
                 s.dataset.selected = val;

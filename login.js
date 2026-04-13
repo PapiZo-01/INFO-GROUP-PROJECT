@@ -2,7 +2,6 @@ function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
         .then(result => {
-            // Login successful — go to the map
             window.location.href = 'index.html';
         })
         .catch(error => console.error("Login failed:", error));

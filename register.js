@@ -21,8 +21,6 @@ function emailRegister(event) {
 }
 
 
-
-
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
