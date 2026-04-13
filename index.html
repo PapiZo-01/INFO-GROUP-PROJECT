@@ -1,35 +1,634 @@
 <!DOCTYPE html>
-<html lang = "en">
-  <head>
-    <meta charset = "UTF-8">
-    <meta name="viewport" content ="width=device-width, initial-scale=1.0" />
-    <title> UWISpots - Map </title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="manifest" href="manifest.json" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
-      <!-- <script
-      src="https://maps.googleapis.com/maps/api/js?key=&libraries=maps,marker"
-      defer> 
-    </script> -->
+    <title>UWISpots</title>
+    <style>
+    
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #2b6fc3;
+            height: 10vh;
+  
+        }
+
+        header img{
+            height: 100%;
+            margin-left: 10px;
+            padding: 5px;
+            background-color: transparent;
+        }
+
+        #AppTitle{
+            font-size: x-large;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+
+        #navbar {
+            display: flex;
+            flex-direction: row;
+            margin-right: 10px;
+        }
+
+        #navbar a {
+           
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: ease-in-out 0.25s;
+
+        }
+
+        #navbar a:hover {
+            background-color: #ddd;
+            color: black;
+            border-radius: 16px;
+        }   
+
+        #MapPage {
+            background-color: #ddd;
+            color: black;
+            border-radius: 16px;
+        }
+
+        main{
+            display: flex;
+            flex-direction: row;
+            height: 90vh;
+        }
+
+        button{
+          height: 40px;
+          width: 40px;
+          background-color: white;
+          border: 2px;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+
+        button i{
+            height: 110%;
+            width: 110%;
+            font-size: x-large;
+            /* padding: 10px 20px; */
+            cursor: pointer;
+        }
+
+
+            /* Aside */
+        aside {
+            background-color: white;
+            padding: 5px;
+            width: 8%;
+            /* float: left; */
+            height: 100%;
+            margin: 0;
+            /* flex-grow: 1; */
+            width: 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+        }   
+
+
+        .sideBtn {
+            height: fit-content;
+            width: fit-content;
+            background-color: transparent;
+            border: none;
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-items: center;
+            padding: 5px;
+            border-radius: 16px;
+            
+            transition: 0.25s ease;
+             
+        }
+
+        .sideBtn:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .sideBtn.selected {
+            background-color: #ddd;
+        }
+
+            /* Map */
+        #map {
+             height: 100%;
+             /* flex-grow: 18; */
+            width: 72%;
+            z-index: 0;
+        }
+
+        #map #Location{
+            position: absolute;
+            z-index: 1000;
+            background-color: white;
+            right: 2%;
+            bottom: 15%;
+            height: 70%;
+            width: 270px;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            display: none;
+            cursor: default;
+        }
+
+        #map #Location.active{
+            display: block;
+        }
+
+        #LocationInfo{
+            border-bottom: #ddd 2px solid;
+             padding-bottom: 10px;
+             margin-bottom: 10px;
+        }
+
+        #ReviewSummary{
+            border-bottom: #ddd 2px solid;
+             padding-bottom: 10px;
+             margin-bottom: 10px;
+           
+        }
+
+        #ReviewSummary h5{
+            margin-bottom: 0;
+        }
+
+        #ReviewSummary button{
+            margin-top: 10px;
+             background-color: #2b6fc3;
+             color: white;
+             border: none;
+             border-radius: 5px;
+             padding: 5px 10px;
+             cursor: pointer;
+            width: fit-content;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #ReviewSummary button i{
+            font-size: medium;
+            padding-right: 5px;
+        }
+
+            /* Save Button  */
+        #AddToFavs {
+            position: absolute;
+            z-index: 1000;
+            bottom: 8%;
+            margin-left: 10px;
+            background-color: white;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s ease;
+        }
+
+        #AddToFavs:hover{
+            background-color: #ddd;
+        }
+
+            /* Details */
+        #detail {
+            background-color: #f4f4f4;
+            padding: 20px;
+            width: 20%;
+            height: 100%;
+            margin: 0;
+            /* float: right; */
+            flex-grow: 1;
+            /* width: 10%; */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+            /* Details header */
+        #FavsHeader {
+            border-bottom: #ddd 2px solid;
+            margin-bottom: 20px;
+            height: 10%;
+        }
+
+            /* Default display for favorites when not logged in */
+        .notlogged{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 90%;
+        }
+
+        .notlogged p{
+            text-align: center;
+            font-size: large;
+            margin-bottom: 20px;
+        }
+
+        .notlogged button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .notlogged button:hover {
+            background-color: #0056b3;
+        }
+
+        .notlogged button a{
+            color: white;
+            text-decoration: none;
+        }
+
+        #List {
+            padding: 0;
+            list-style-type: none;
+        }
+
+            /* List Items */
+        #List .card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .card {
+            background-color: #ddd;
+            /* border: 1px solid black; */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        #cardHeader {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #cardHeader button {
+            scale: 0.75;
+            background-color: transparent;
+            
+            cursor: pointer;
+            
+        }
+
+        .cardActions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        
+        }
+        
+        .cardActions button {
+            background-color: transparent;
+            cursor: pointer;
+            scale: 0.75;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        #Reviews .card{
+            display: flex;
+            flex-direction: column;
+            background-color: #ddd;
+        }
+
+        #Reviews .card p:first-child {
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+
+        #Reviews .star-rating {
+            cursor: default;
+            align-self: flex-start;
+            font-size: 50px;
+        }
+
+        .LikeBtn{
+            background-color: transparent;
+            align-self: flex-end;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #ccc;        /* unselected color */
+            transition: color 0.2s ease;
+        }
+
+        .star.selected,
+        .star.hovered {
+            color: #f5a623;     /* gold color */
+        }
+
+         /* ── Overlay ── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* Hidden state */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* ── Popup Card ── */
+        .popup-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 340px;
+            position: relative;
+
+        /* Hidden state — shifted down slightly */
+            opacity: 0;
+            transform: translateY(20px) scale(0.97);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .overlay.active .popup-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        
+        .popup-card h2 {
+            margin: 0 0 0.5rem;
+            font-size: 1.4rem;
+            color: #1e1e2e;
+        }
+
+        .popup-card p {
+            margin: 0 0 1.5rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .popup-card input {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .popup-notes{
+            /* text-align: start; */
+            width: 100%;
+            height: 150px;
+            margin-bottom: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            padding: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 0.7rem;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .confirm-btn:hover {
+            background: #4f46e5;
+        }
+
+        .nav-avatar {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 4px;
+        }
+
+        .nav-user {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            color: black;
+            font-size: 0.95rem;
+            transition: background 0.2s ease;
+            user-select: none;
+        }
+
+        .nav-user:hover {
+            background-color: #ddd;
+        }
+
+        .nav-chevron {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            min-width: 180px;
+            z-index: 999;
+            padding: 8px 0px;
+        }
+
+        .user-dropdown.open {
+            display: block;
+        }
+
+        .nav-user:has(.user-dropdown.open) .nav-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-name {
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .dropdown-divider {
+            margin: 4px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            font-size: 0.9rem;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #c0392b;
+        }
+
+        @media screen and (max-width: 768px) {
+
+                main{
+                    flex-direction: column;
+                    overflow-y: auto;
+                }
+
+                #map {
+                    width: 100%;
+                    height: 70%;
+                    
+                }
+    
+                aside {
+                    width: 100%;
+                    height: 10%;
+                    display:inline-flex;
+                    flex-direction: row;
+                    justify-content: space-around;
+                }
+
+                .sideBtn{
+                    margin: 0;
+                }
+    
+                #detail {
+                    width: 100%;
+                    height: 40%;
+                    padding: 5px;
+                }
+
+                #FavsHeader{
+                    height: fit-content;
+                    margin-bottom: 10px;
+                }
+
+                #map #Location {
+                    right: 2%;
+                    overflow-y: scroll;
+                    height: 70%;
+
+
+                }
+        }
+
+
+    </style>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
-  </head>
-  <body> 
-     <header>
+
+</head>
+<body>
+
+    <header>
 
         <img src="/icon/Logo.png" alt="">
 
-        <p id="AppTitle">UWISpots<i class="bi bi-crosshair"></i></p>
+        <a href="home.html" id="AppTitle">UWISp<i class="bi bi-crosshair">ts</i></a>
 
         <nav id="navbar">
-            <a href="#home" id="HomePage"><i class="bi bi-house"></i> Home</a>
-            <a href="#map" id="MapPage"><i class="bi bi-map"></i> Map</a>
-            <a href="#about" id="AboutPage"><i class="bi bi-info-circle"></i> About</a>
-            <a href="login.html" id="LoginPage"><i class="bi bi-person"></i> Login</a>
+          
 
         </nav>
 
@@ -38,18 +637,21 @@
     <main>
         <aside id="master">
            
-            <button id="Favorites" class="sideBtn" onclick="select(this); displayFavorites()"><i class="bi bi-bookmark"></i><span>Favorites</span></button>
-            <button id="FoodAndDrink" class="sideBtn" onclick="select(this); displayFoodAndDrink()"><i class="bi bi-cup-straw"></i><span>Food and Drink</span></button>
-            <button id="StudySpots" class="sideBtn" onclick="select(this); displayStudySpots()"><i class="bi bi-book"></i><span>Study Spots</span></button>
-            <button id="Recreation" class="sideBtn" onclick="select(this); displayRecreation()"><i class="bi bi-controller"></i><span>Recreation</span></button>
+            
+                <button id="Favorites" class="sideBtn" onclick="select(this); displayFavorites()"><i class="bi bi-bookmark"></i><span>Favorites</span></button>
+                <button id="FoodAndDrink" class="sideBtn" onclick="select(this); displayFoodAndDrink()"><i class="bi bi-cup-straw"></i><span>Food and Drink</span></button>
+                <button id="StudySpots" class="sideBtn" onclick="select(this); displayStudySpots()"><i class="bi bi-book"></i><span>Study Spots</span></button>
+                <button id="Recreation" class="sideBtn" onclick="select(this); displayRecreation()"><i class="bi bi-controller"></i><span>Recreation</span></button>
+            
         </aside>
 
         <div id="map">
-             <button id="AddToFavs" onclick="openPopup()"><i class="bi bi-bookmark-fill"></i></button>
+             <button id="AddToFavs" onclick="openPopup('', true)"><i class="bi bi-bookmark-fill"></i></button>
             
             <div id="Location">
-                <button class="close-btn" onclick="closeInfo()">✕</button>
+                
                 <section id="LocationInfo">
+                    <button class="close-btn" onclick="closeInfo()">✕</button>
                     <h2>Location Name</h2>
                     <p>Location details and description go here. This is a placeholder for the location information that will be displayed when a user clicks on a spot on the map or a spot in the details.</p>
                 </section>
@@ -89,51 +691,7 @@
             </div>
         </div>
 
-        <!-- <div id="map">
-            <button id="AddToFavs" onclick="openPopup()"><i class="bi bi-bookmark-fill"></i></button>
-           
-            adds a div with the location information and reviews when a user clicks on a spot on the map or a spot in the details. This div should be hidden by default and only displayed when a location is selected.
-            <div id="Location">
-                <section id="LocationInfo">
-                    <h2>Location Name</h2>
-                    <p>Location details and description go here. This is a placeholder for the location information that will be displayed when a user clicks on a spot on the map or a spot in the details.</p>
-                </section>
 
-                <section id="ReviewSummary">
-                    <h5>Reviews Summary: </h5>
-                     <div class="star-rating" id="starRating">
-                            <h3><span id="ratingValue">0</span> / 5</h3>
-                            <span class="star" data-value="1">&#9733;</span>
-                            <span class="star" data-value="2">&#9733;</span>
-                            <span class="star" data-value="3">&#9733;</span>
-                            <span class="star" data-value="4">&#9733;</span>
-                            <span class="star" data-value="5">&#9733;</span>
-                     </div>
-                     <button>Write a Review <i class="bi bi-pencil-square"></i> </button>
-                </section>
-
-                <section id="Reviews">
-                    <h5>Reviews: </h5>
-                    <p>No reviews yet. Be the first to write a review for this location!</p>
-                    <div class="card">
-                        <p>UserName</p>
-                        
-                        <div class="star-rating" id="starRating">
-                            <span class="star" data-value="1">&#9733;</span>
-                            <span class="star" data-value="2">&#9733;</span>
-                            <span class="star" data-value="3">&#9733;</span>
-                            <span class="star" data-value="4">&#9733;</span>
-                            <span class="star" data-value="5">&#9733;</span>
-                        </div>
-                        <p>Review content goes here.</p>
-                        <button class="LikeBtn"><i class="bi bi-hand-thumbs-up"></i>Like</button>
-                    </div>
-                </section>
-
-                
-            </div>
-            <gmp-map center="10.641919556440756, -61.39944669632869" zoom="18" map-id="DEMO_MAP_ID" ></gmp-map>
-        </div> -->
 
         <div id="detail">
             <section id="FavsHeader">
@@ -144,23 +702,11 @@
                 <p> Use the map to explore and find interesting spots on campus. Click on <i class="bi bi-bookmark-fill"></i> to add a location to your favorites.</p>
                 
              </section>
-
-
-             <!-- section to be display in favorites when a user clicks and is not logged in -->
-             <!-- <section class="notlogged">
-                 <p>Please log in to view your favorites.</p>
-                 <button><a href="login.html">Login</a></button>
-             </section> -->
-
-
-                <!-- To be displayed when user attempts to switch to favorites and is not logged in -->
-              <!-- <section class="notlogged">
-                 <p>Please log in to view your favorites.</p>
-                 <button><a href="login.html">Login</a></button>
-             </section> -->
-                
-                <!-- <p id="location-name">Select a location on the map to see details here.</p> -->
+             
         </div>
+
+        
+
 
     </main>
 
@@ -168,18 +714,100 @@
         <div class="popup-card">
             <button class="close-btn" onclick="closePopup()">✕</button>
             <h2>Save Location</h2>
-            <input type="text" placeholder="Location Title">
-            <textarea class="popup-notes" placeholder="Location Notes (optional)"></textarea>
-            <!-- button appends the added location to the favorites section -->
-            <button class="confirm-btn" onclick="closePopup()">Confirm</button>
+            <input id="popupLocationTitle" type="text" placeholder="Location Title">
+            <textarea id="popupNotes" class="popup-notes" placeholder="Location Notes (optional)"></textarea>
+            <button class="confirm-btn" onclick="confirmSave()">Confirm</button>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    
+    <script src="inapp.js"></script>
 
-    <script src="app.js"> </script> 
-    <script>
+    <script src="leaflet.js"> </script>
 
-         function select(element) {
+   <script>
+
+        auth.onAuthStateChanged(async user => {
+            try {
+                if (!user) {
+                    document.getElementById('navbar').innerHTML = `
+                        <a href="#home" id="HomePage"><i class="bi bi-house"></i> Home</a>
+                        <a href="index.html" id="MapPage"><i class="bi bi-map"></i> Map</a>
+                        <a href="#about" id="AboutPage"><i class="bi bi-info-circle"></i> About</a>
+                        <a href="login.html" id="LoginPage"><i class="bi bi-person"></i> Login</a>
+
+                    `;
+                return; 
+                }
+                     
+                
+                const avatar = user.photoURL
+                    ? `<img src="${user.photoURL}" class="nav-avatar">`
+                    : `<i class="bi bi-person-circle" style="font-size:1.4rem;"></i>`;
+
+                document.getElementById('navbar').innerHTML = `
+                    <a href="home.html" id="HomePage"><i class="bi bi-house"></i> Home</a>
+                    <a href="index.html" id="MapPage"><i class="bi bi-map"></i> Map</a>
+                    <a href="#about" id="AboutPage"><i class="bi bi-info-circle"></i> About</a>
+                    <div class="nav-user" onclick="toggleUserMenu()">
+                        ${avatar}
+                        <span class="nav-username">${user.displayName || user.email}</span>
+                        <i class="bi bi-chevron-down nav-chevron"></i>
+                        <div class="user-dropdown" id="userDropdown">
+                            <div class="dropdown-name">${user.displayName || user.email}</div>
+                            <hr class="dropdown-divider">
+                            <a class="dropdown-item" onclick="logout()">
+                                <i class="bi bi-box-arrow-right"></i> Log out
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                const snapshot = await db.collection('users').doc(user.uid).collection('favs').get();
+                snapshot.forEach(doc => favs.push(doc.data()));
+
+            } catch(err) {
+                console.error("Auth error:", err);
+            }
+        });
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('open');
+        }
+
+
+        document.addEventListener('click', function(e) {
+            const navUser = document.querySelector('.nav-user');
+            if (navUser && !navUser.contains(e.target)) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown) dropdown.classList.remove('open');
+            }
+        });
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch(err => console.error("Logout failed:", err));
+        }
+
+        const locationDiv = document.getElementById('Location');
+
+        locationDiv.addEventListener('wheel', function(e) {
+            e.stopPropagation();
+        }, { passive: false });
+
+        locationDiv.addEventListener('mouseover', function() {
+            map.scrollWheelZoom.disable();
+        });
+
+        locationDiv.addEventListener('mouseout', function() {
+            map.scrollWheelZoom.enable();
+        });
+
+       function select(element) {
             const isAlreadySelected = element.classList.contains("selected");
 
             document.querySelectorAll('aside button').forEach(li => {
@@ -193,84 +821,36 @@
                 element.classList.remove("selected");
             }
         }
+
         
-        var map = L.map('map').setView([10.641919556440756, -61.39944669632869], 18);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-
-        const locationDiv = document.getElementById('Location');
-
-        locationDiv.addEventListener('mouseover', function() {
-            map.scrollWheelZoom.disable();
-        });
-
-        locationDiv.addEventListener('mouseout', function() {
-            map.scrollWheelZoom.enable();
-        });
-
-        //once you get the info button working yall can use this function to close the location info when the user clicks the close button on the location info div. For now, it just adds the "active" class which hides the
-        // location info div until you click on a location again. You can modify this function to clear the location info content if needed.
-        function closeInfo() {
-        document.getElementById('Location').classList.add('active');
-        }
-
-        function displayFavorites() {
-            let detail = document.getElementById("detail");
-            detail.innerHTML = `
-                <section id="FavsHeader">
-                <h2> Favorites</h2>
-            </section>
-
-            <section >
-                <ul id="List">
-                    <div class="card">
-                        <div id="cardHeader">
-                            <h3>Spot 1</h3> 
-                            <button><i class="bi bi-bookmark-fill"></i></button>
-                        </div>
-                        <p>No Notes.</p>
-                        <br>
-                        <p style="font-size: 13px;">Saved on 10/03/2026</p>
-                        <div class="cardActions">
-                            <button><i class="bi bi-pencil"></i></button>  <!--when clicked the user can edit the information of the saved location-->
-                        </div>
-                   
-                    </div>
-                </ul>
-                
-            </section>
-            `;
-        }
-        
-        function displayFoodAndDrink() {
+         function displayFoodAndDrink() {
             let detail = document.getElementById("detail");
             detail.innerHTML = `
                 <section id="FavsHeader">
                 <h2> Food and Drink</h2>
             </section>`;
-
-            detail.innerHTML += `
-            <section >
-                <ul id="List">
-                    <div class="card">
-                        <div id="cardHeader">
-                            <h3>Spot 1</h3> 
-                            <button><i class="bi bi-bookmark"></i></button>
-                            
-                        </div>
-                        
-                        <div id="cardContent">
-                            <p>Opens: 8am to 4pm</p>
-                        </div>
-                    </div>
-                </ul>
-             </section>
-            `;
-
-           
+ 
+            for(let i=0; i<places.length; i++){
+                let p = places[i];
+                if(p.type === "FnD"){
+                    const bookmarkIcon = p.favorited ? 'bi-bookmark-fill' : 'bi-bookmark';
+                    detail.innerHTML += `
+                        <section >
+                            <ul id="List">
+                                <div class="card" style="cursor:pointer;" onclick="showInfo(places[${i}])">
+                                    <div id="cardHeader">
+                                        <h3>${p.name}</h3> 
+                                        <button onclick="AddToFavorites(${i}, event)"><i class="bi ${bookmarkIcon}"></i></button>
+                                    </div>
+                                    <div id="cardContent">
+                                        <p>Opens: 8am to 4pm</p>
+                                    </div>
+                                </div>
+                            </ul>
+                        </section>
+                        `;
+                }
+            }
         
         }
 
@@ -280,26 +860,28 @@
                 <section id="FavsHeader">
                 <h2> Study Spots</h2>
             </section>`;
-
-            detail.innerHTML += `
-            <section >
-                <ul id="List">
-                    <div class="card">
-                        <div id="cardHeader">
-                            <h3>Spot 1</h3> 
-                            <button><i class="bi bi-bookmark"></i></button>
-                            
-                        </div>
-                        
-                        <div id="cardContent">
-                            <p>Opens: 8am to 4pm</p>
-                        </div>
-                    </div>
-                </ul>
-             </section>
-            `;
-
-           
+ 
+             for(let i=0; i<places.length; i++){
+                let p = places[i];
+                if(p.type === "SS"){
+                    const bookmarkIcon = p.favorited ? 'bi-bookmark-fill' : 'bi-bookmark';
+                    detail.innerHTML += `
+                    <section >
+                        <ul id="List">
+                            <div class="card" style="cursor:pointer;" onclick="showInfo(places[${i}])">
+                                <div id="cardHeader">
+                                    <h3>${p.name}</h3> 
+                                    <button onclick="AddToFavorites(${i}, event)"><i class="bi ${bookmarkIcon}"></i></button>
+                                </div>
+                                <div id="cardContent">
+                                    <p>Opens: 8am to 4pm</p>
+                                </div>
+                            </div>
+                        </ul>
+                    </section>
+                    `;
+                }
+            }
         
         }
 
@@ -310,72 +892,175 @@
                 <section id="FavsHeader">
                 <h2> Recreation</h2>
             </section>`;
-
-            detail.innerHTML += `
-            <section >
-                <ul id="List">
-                    <div class="card">
-                        <div id="cardHeader">
-                            <h3>Spot 1</h3> 
-                            <button><i class="bi bi-bookmark"></i></button>
-                            
-                        </div>
-                        
-                        <div id="cardContent">
-                            <p>Opens: 8am to 4pm</p>
-                        </div>
-                    </div>
-                </ul>
-             </section>
-            `;
+ 
+            for(let i=0; i<places.length; i++){
+                let p = places[i];
+                if(p.type === "R"){
+                    const bookmarkIcon = p.favorited ? 'bi-bookmark-fill' : 'bi-bookmark';
+                    detail.innerHTML += `
+                        <section >
+                            <ul id="List">
+                                <div class="card" style="cursor:pointer;" onclick="showInfo(places[${i}])">
+                                    <div id="cardHeader">
+                                        <h3>${p.name}</h3> 
+                                        <button onclick="AddToFavorites(${i}, event)"><i class="bi ${bookmarkIcon}"></i></button>
+                                    </div>
+                                    <div id="cardContent">
+                                        <p>Opens: 8am to 4pm</p>
+                                    </div>
+                                </div>
+                            </ul>
+                        </section>
+                        `;
+                }
+            }
         }
 
-
-    function openPopup() {
-      document.getElementById('overlay').classList.add('active');
+    function openPopup(placeName, fromMap = false) {
+        document.getElementById('overlay').classList.add('active');
+        // Pre-fill the location title input with the place name
+        document.getElementById('popupLocationTitle').value = placeName || '';
+        // Store the name so Confirm can use it
+        document.getElementById('overlay').dataset.placeName = placeName || '';
+        document.getElementById('overlay').dataset.fromMap = fromMap;
     }
 
     function closePopup() {
-      document.getElementById('overlay').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('popupNotes').value = ''
     }
-
-    // Close if clicking the dark overlay (not the card itself)
-    function closeOnOverlay(e) {
+    
+    function closeOnOverlay(e) {    // tHIS CLOSES THE POPUP IF ANYTHING SURROUNDING IT IS CLICKED
       if (e.target === document.getElementById('overlay')) 
         closePopup();
     }
 
-    const stars = document.querySelectorAll('.star');
-    const ratingValue = document.getElementById('ratingValue');
-    let currentRating = 0;
+    async function confirmSave() {
+        const title = document.getElementById('popupLocationTitle').value.trim();
+        const notes = document.getElementById('popupNotes').value.trim();
+        const fromMap = document.getElementById('overlay').dataset.fromMap === 'true';
+        const user = auth.currentUser;
 
-    stars.forEach(star => {
-    // Highlight stars on hover
-    star.addEventListener('mouseover', function() {
-            const hoverVal = this.dataset.value;
-            stars.forEach(s => {
-                s.classList.toggle('hovered', s.dataset.value <= hoverVal);
-            });
-    });
+            if (fromMap) {  //MAKES A NEW MARKER FOR EACH FAVORITE PLACE THAT ISNT IN THE ARRAY OF OBJECTS
+                const center = map.getCenter();
+                const newFav = {
+                    name: title,
+                    savedTitle: title,
+                    notes: notes,
+                    latitude: center.lat,
+                    longitude: center.lng,
+                    savedOn: new Date().toLocaleDateString('en-GB')
+                };
 
-        // Reset to current rating when mouse leaves
-        star.addEventListener('mouseout', function() {
-            stars.forEach(s => {
-                s.classList.remove('hovered');
-            });
-        });
+                favs.push(newFav);
 
-        // Set rating on click
-        star.addEventListener('click', function() {
-            currentRating = this.dataset.value;
-            ratingValue.textContent = currentRating;
-            stars.forEach(s => {
-                s.classList.toggle('selected', s.dataset.value <= currentRating);
-            });
-        });
-    });
+                
+                if (user) {   // SAVES ALL THE USERS FAVORITES FOR WHEN THEY LOG IN
+                    await db.collection('users')
+                            .doc(user.uid)
+                            .collection('favs')
+                            .add(newFav);
+                }
 
-    </script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVprZOHhVX2_cNEBhths5QVk4JZLKvR-c"></script>  -->
-  </body>
+                L.marker([center.lat, center.lng], { icon: favIcon })
+                    .addTo(map)
+                    .bindPopup(`<b>${title}</b><br>${notes || 'No notes.'}`)
+                    .openPopup();
+
+            } else {
+                const placeName = document.getElementById('overlay').dataset.placeName;
+                const place = places.find(p => p.name === placeName);
+
+                if (place) {
+                    const existingIdx = favs.findIndex(f => f.name === place.name);
+                    if (existingIdx === -1) {
+                        place.favorited = true;
+
+                        const newFav = {
+                            ...place,
+                            savedTitle: title,
+                            notes: notes,
+                            savedOn: new Date().toLocaleDateString('en-GB')
+                        };
+
+                        favs.push(newFav);
+
+                        // Save to Firestore
+                        if (user) {
+                            await db.collection('users')
+                                    .doc(user.uid)
+                                    .collection('favs')
+                                    .add(newFav);
+                        }
+                    }
+                }
+            }
+
+        closePopup();
+
+        const selected = document.querySelector('aside button.selected');      //RELOADS THE DETAILS WHEN APLACE IS SAVED TO SHOW THAT ITS BEEN SAVED
+        if (selected) {
+            if (selected.id === 'FoodAndDrink') displayFoodAndDrink();
+            else if (selected.id === 'StudySpots') displayStudySpots();
+            else if (selected.id === 'Recreation') displayRecreation();
+            else if (selected.id === 'Favorites') displayFavorites();
+        }
+    }
+
+    function AddToFavorites(index, event) {
+        event.stopPropagation();
+        const p = places[index];
+        openPopup(p.name);
+    }
+
+    function displayFavorites() {
+    const user = auth.currentUser;
+    let detail = document.getElementById("detail");
+    detail.innerHTML = `<section id="FavsHeader"><h2>Favorites</h2></section>`;
+
+    if (!user) {        //TELLS USER TO LOG IN IF THEY ARENT ALREADY
+        detail.innerHTML += `
+        <section class="notlogged">
+            <p>Please log in to view your favorites.</p>
+            <button onclick="goToLogin()">Login</button>
+        </section>`;
+        return;
+    }
+
+    if (favs.length === 0) {        //DISPLAYS ALL THE PLACES THE 
+        detail.innerHTML += `
+        <section class="notlogged">
+            <p>No favorites saved yet. Browse locations and press <i class="bi bi-bookmark"></i> to save one!</p>
+        </section>`;
+        return;
+    }
+    
+        for (let i = 0; i < favs.length; i++) {
+            const f = favs[i];
+            detail.innerHTML += `
+            <section>
+                <ul id="List">
+                <div class="card" style="cursor:pointer;" onclick="showInfo(favs[${i}])">
+                    <div id="cardHeader">
+                    <h3>${f.savedTitle || f.name}</h3>
+                    <button onclick="event.stopPropagation(); removeFav(${i})"><i class="bi bi-bookmark-fill"></i></button>
+                    </div>
+                    <p>${f.notes || 'No notes.'}</p>
+                    <p style="font-size:13px;">Saved on ${f.savedOn}</p>
+                </div>
+                </ul>
+            </section>`;
+        }
+    }
+ 
+    function removeFav(index) { 
+        const removed = favs.splice(index, 1)[0];
+        // Un-mark the place as favorited
+        const place = places.find(p => p.name === removed.name);
+        if (place) place.favorited = false;
+        displayFavorites();
+    }
+
+   </script>
+</body>
 </html>

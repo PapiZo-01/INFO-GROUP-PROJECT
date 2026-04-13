@@ -78,6 +78,19 @@
             cursor: pointer;
         }
 
+        #goog{
+            margin-bottom: 5px;
+            border-radius: 16px;
+            color: black;
+            background-color: #fff;
+            border: 1px solid black;
+        }
+
+        #goog:hover{
+            background-color: #007BFF;
+            color: white;
+        }
+
         .login-container button:hover {
             background-color: #0056b3;
         }
@@ -90,6 +103,8 @@
 </head>
 <body>
     <div class="page">
+
+    
     </div>
 
     <div class="loginside">
@@ -97,34 +112,26 @@
         <div class="login-container">
             <h2>Login to UWISpots<i class="bi bi-crosshair"></i></h2>
             <div class="inputitem">
-                <i class="bi bi-person-fill"></i><span><input type="text" placeholder="Username" id="username" required></span>
+                <i class="bi bi-person-fill"></i><span><input id="loginEmail" type="text" placeholder="Username" required></span>
             </div>
             <div class="inputitem">
-                <i class="bi bi-lock-fill"></i><span><input type="password" placeholder="Password" id="password" required></span>
+                <i class="bi bi-lock-fill"></i><span><input id="loginPassword" type="password" placeholder="Password" required></span>
             </div>
             <p id="Reset"><a href="#">Forgot Password?</a></p>
-            <button onclick="login()">Login</button>
-
+            <button  id="goog" onclick="googleLogin()">
+                <i class="bi bi-google"></i> Sign in with Google
+            </button>
+            <button  onclick="emailLogin()">Sign In</button>
+            <p id="loginError" style="color:red;"></p>
             <p>Don't have an account? <a href="register.html">Register here</a></p>
         </div>
     </div>
     
+     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="inapp.js"></script>
+    <script src="login.js"></script>
     
-
-    <script>
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // For demonstration purposes, we'll just check if the fields are filled
-            if (username && password) {
-                alert('Login successful!');
-                // Here you would typically redirect to the main page or dashboard
-                window.location.href = 'index.html';
-            } else {
-                alert('Please enter both username and password.');
-            }
-        }
-    </script>
 </body>
 </html>
