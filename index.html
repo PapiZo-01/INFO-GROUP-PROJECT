@@ -711,12 +711,12 @@
     </main>
 
     <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
-        <div class="popup-card">
-            <button class="close-btn" onclick="closePopup()">✕</button>
+        <div id="popcard" class="popup-card">
+            <!-- <button class="close-btn" onclick="closePopup()">✕</button>
             <h2>Save Location</h2>
             <input id="popupLocationTitle" type="text" placeholder="Location Title">
             <textarea id="popupNotes" class="popup-notes" placeholder="Location Notes (optional)"></textarea>
-            <button class="confirm-btn" onclick="confirmSave()">Confirm</button>
+            <button class="confirm-btn" onclick="confirmSave()">Confirm</button> -->
         </div>
     </div>
 
@@ -777,6 +777,8 @@
                     if (!isInPlaces) {
                         L.marker([fav.latitude, fav.longitude], { icon: favIcon })
                             .addTo(map);
+
+                        fav.marker = marker;
                     }
             
                 }
@@ -932,11 +934,33 @@
 
     function openPopup(placeName, fromMap) {        //OPENS A POPUP WHICH ALLOWS PEOPLE TO SAVE NOTES ABOUT FAVORITED AREAS
         document.getElementById('overlay').classList.add('active');
-        
-        document.getElementById('popupLocationTitle').value = placeName || '';
+        const user = auth.currentUser;
+        let card = document.getElementById('popcard');
+        if(user){
+            card.innerHTML = `
+                 <button class="close-btn" onclick="closePopup()">✕</button>
+                <h2>Save Location</h2>
+                <input id="popupLocationTitle" type="text" placeholder="Location Title">
+                <textarea id="popupNotes" class="popup-notes" placeholder="Location Notes (optional)"></textarea>
+                <button class="confirm-btn" onclick="confirmSave()">Confirm</button>
+            `;
+             document.getElementById('popupLocationTitle').value = placeName || '';
    
-        document.getElementById('overlay').dataset.placeName = placeName || '';
-        document.getElementById('overlay').dataset.fromMap = fromMap;
+            document.getElementById('overlay').dataset.placeName = placeName || '';
+            document.getElementById('overlay').dataset.fromMap = fromMap;
+            
+          
+        }
+        else{
+    
+
+            card.innerHTML = `
+                <button class="close-btn" onclick="closePopup()">✕</button>
+            <h2>Please login to Save locations</h2>
+            <button class="confirm-btn" onclick="goToLogin()">Login</button>
+            `;
+        }
+       
     }
 
     function closePopup() {     //CLOSES THE POPUP
@@ -973,6 +997,9 @@
                 savedOn: new Date().toLocaleDateString('en-GB')
             };
 
+            const marker = L.marker([center.lat, center.lng], { icon: favIcon })       //CREATES A MARKER ON THE MAP
+                .addTo(map)
+
             if (user) {     //IF THE USER IF LOGGED IN IT ADDS THE FAVORITE TO THE DATABASE AND ARRAY
                 const docRef = await db.collection('users')
                                     .doc(user.uid)
@@ -983,8 +1010,8 @@
                 favs.push(newFav);      //IF NOT IT JUST ADDS IT TO THE ARRAY
             }
 
-            L.marker([center.lat, center.lng], { icon: favIcon })       //CREATES A MARKER ON THE MAP
-                .addTo(map)
+            
+                
                 
 
         } else {    //HANLES IF ADDING FAVORITE FROM ONE OF THE TABS 
@@ -1100,6 +1127,10 @@
         }
 
         displayFavorites();
+    }
+
+    function goToLogin(){
+        window.location.href='login.html'
     }
 
    </script>
