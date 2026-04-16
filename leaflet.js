@@ -121,6 +121,11 @@ function createMarker() {       //CREATES A MARKER OF THE MAP FOR EACH LOCATION 
         var marker = L.marker([p.latitude, p.longitude]).addTo(map);
             marker.on('click', () =>showInfo(p) );
     }
+
+    for(let f of favs){
+        var marker = L.marker([f.latitude, f.longitude], { icon: favIcon }).addTo(map);
+            marker.on('click', () =>showInfo(f) );
+    }
 }
 
 function showInfo(p){       //OPENS THE INFO CARD ON THE MAP WHICH GIVES INFORMATION OF A SELECTED LOCATION
@@ -178,32 +183,46 @@ function closeInfo() {
 function attachStarEvents() {
     const stars = document.querySelectorAll("#Location .star");
 
-    stars.forEach(star => {
+    for(let star of stars){
        
         star.addEventListener("mouseover", function () {        //CHANGES COLOUR WHEN MOUSE IS OVER THE STARS
             const val = this.dataset.value;
-            stars.forEach(s => {
-                s.style.color = s.dataset.value <= val ? "gold" : "gray";
-            });
+            for (const s of stars) {
+                if(s.dataset.value <= val){
+                    s.style.color = "gold";
+                }
+                else {
+                    s.style.color = "gray";
+                }
+            }
         });
 
-    
         star.addEventListener("mouseleave", function () {       //PUTS STARS BACK TO NORMAL WHEN MOUSE IS NOLONGER ON STARS
-            stars.forEach(s => {
-                s.style.color = s.dataset.value <= (s.dataset.selected || 0) ? "gold" : "gray";
-            });
+        for (const s of stars) {
+
+            if (s.dataset.value <= (s.dataset.selected || 0)) {
+                s.style.color = "gold";
+            } else {
+                s.style.color = "gray";
+            }
+                    }
         });
 
-        
         star.addEventListener("click", function () {        //KEEPS HOW MANY STARS ARE ACTUALLY CLICKED
-            const val = this.dataset.value;
-            stars.forEach(s => {
-                s.dataset.selected = val;
-                s.style.color = s.dataset.value <= val ? "gold" : "gray";
-            });
-            document.getElementById("ratingValue").textContent = val;
+        const val = this.dataset.value;
+        for (const s of stars) {
+            s.dataset.selected = val;
+            if(s.dataset.value <= val){
+                s.style.color = "gold";
+            }
+            else{
+                s.style.color = "gray";
+            }
+             
+        }
+            document.getElementById("ratingValue").textContent = val;   //SAYS HOW MANY STARS WERE CHOSEN
         });
-    });
+    };
 }
 
 

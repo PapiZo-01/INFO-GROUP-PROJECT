@@ -767,7 +767,19 @@
                 `;      //DISPLAYS THIS NAVBAR WHEN THE USER IS LOGGED IN
 
                 const snapshot = await db.collection('users').doc(user.uid).collection('favs').get();
-                snapshot.forEach(doc => favs.push({ ...doc.data(), firestoreId: doc.id }));;
+                
+                for (const doc of snapshot.docs) {
+                    const fav = { ...doc.data(), firestoreId: doc.id };
+                    favs.push(fav);
+
+                    const isInPlaces = places.find(p => p.name === fav.name);
+
+                    if (!isInPlaces) {
+                        L.marker([fav.latitude, fav.longitude], { icon: favIcon })
+                            .addTo(map);
+                    }
+            
+                }
 
             } catch(err) {
                 console.error("Auth error:", err);
@@ -810,9 +822,11 @@
        function select(element) {       //SHOWS WHICH ITEM IN THE MASTER IS CURRENTLY SELECTED
             const isAlreadySelected = element.classList.contains("selected");
 
-            document.querySelectorAll('aside button').forEach(li => {
+            let list = document.querySelectorAll('aside button');
+        
+            for(let li of list){
                 li.classList.remove("selected");
-            });
+            }
 
             if (!isAlreadySelected) {
                 element.classList.add("selected");
@@ -916,7 +930,7 @@
             }
         }
 
-    function openPopup(placeName, fromMap = false) {        //OPENS A POPUP WHICH ALLOWS PEOPLE TO SAVE NOTES ABOUT FAVORITED AREAS
+    function openPopup(placeName, fromMap) {        //OPENS A POPUP WHICH ALLOWS PEOPLE TO SAVE NOTES ABOUT FAVORITED AREAS
         document.getElementById('overlay').classList.add('active');
         
         document.getElementById('popupLocationTitle').value = placeName || '';
@@ -938,7 +952,14 @@
     async function confirmSave() {      //CONFIRMS THE INFRO WHEN SAVING A FOVRITED AREA
         const title = document.getElementById('popupLocationTitle').value.trim();
         const notes = document.getElementById('popupNotes').value.trim();
-        const fromMap = document.getElementById('overlay').dataset.fromMap === 'true';
+        let fromMap;
+        if(document.getElementById('overlay').dataset.fromMap === 'true'){
+             fromMap = true;
+        }
+        else{
+            fromMap =false;
+        }
+
         const user = auth.currentUser;
 
         if (fromMap) {      //HANDLES IF ADDING A FAVORITE FROM AddToFavs BUTTON ON MAP
@@ -955,7 +976,7 @@
             if (user) {     //IF THE USER IF LOGGED IN IT ADDS THE FAVORITE TO THE DATABASE AND ARRAY
                 const docRef = await db.collection('users')
                                     .doc(user.uid)
-                                    .collection('favs')
+                                    .collection('favs') 
                                     .add(newFav);
                 favs.push({ ...newFav, firestoreId: docRef.id });
             } else {
@@ -1000,17 +1021,25 @@
         
         const selected = document.querySelector('aside button.selected'); // REFRESH WHICHEVER TAB IS CURRENTLY ACTIVE
         if (selected) {
-            if (selected.id === 'FoodAndDrink') displayFoodAndDrink();
-            else if (selected.id === 'StudySpots') displayStudySpots();
-            else if (selected.id === 'Recreation') displayRecreation();
-            else if (selected.id === 'Favorites') displayFavorites();
+            if (selected.id === 'FoodAndDrink') {
+                displayFoodAndDrink();
+            }
+            else if (selected.id === 'StudySpots'){
+                displayStudySpots();
+            } 
+            else if (selected.id === 'Recreation'){
+                displayRecreation();
+            } 
+            else if (selected.id === 'Favorites'){
+                displayFavorites();
+            } 
         }
     }
 
     function AddToFavorites(index, event) {
         event.stopPropagation();
         const p = places[index];
-        openPopup(p.name);
+        openPopup(p.name, false);
     }
 
     function displayFavorites() {       //DISPLAYS THE FAVORITED AREAS OF A USER
@@ -1056,7 +1085,10 @@
     async function removeFav(index) {       //REMOVES AN FAVORITED ITEM FROM USERS LIST 
         const removed = favs.splice(index, 1)[0];
         const place = places.find(p => p.name === removed.name);
-        if (place) place.favorited = false; 
+        if (place) {
+             place.favorited = false; 
+        }
+           
 
         const user = auth.currentUser;
         if (user && removed.firestoreId) {
